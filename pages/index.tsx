@@ -34,7 +34,38 @@ export const Home: NextPage<HomeProps> = ({ data }) => {
         <script async src="https://platform.twitter.com/widgets.js"></script>
       </div>
 
-      <List data={data} />
+      <div className="list">
+        <List data={data} />
+      </div>
+
+      <p>
+        The best way to stake ETH is to {}
+        <a href="https://ethereum.org/en/staking/solo/">run your own Ethereum validator node</a>
+        . Running a validator provides the highest possible yield, and contributes to the decentralization {}
+        of the Ethereum network.
+      </p>
+
+      <p>
+        However, many users find benefits of staking using a {}
+        <a href="https://ethereum.org/en/staking/pools/">liquid staking pool</a>
+        . These protocols and companies take custody of user ETH and operate validator nodes on their {}
+        behalf, in exchange for a percentage of the generated yield.
+      </p>
+
+      <p>
+        There are two primary benefits of these liquid-staking pools. First, users may stake amounts {}
+        smaller than the 32 ETH required to run a validator node. Second, the staked assets are {}
+        represented by staking tokens, which can be used in other DeFi applications (as collateral, {}
+        as a trading pair, etc). Additionally, users can effectively "unstake" their ETH by selling {}
+        these staked assets on secondary markets.
+      </p>
+
+      <p>
+        When choosing a staking pool, users should be aware of both the effective APY provided by the {}
+        staking pool (which is determined by the fee the pool charges), as well as the market discount {}
+        of the staking token. Most staking tokens currently trade at a discount to ETH on secondary {}
+        markets, which can provide opportunities for those who wish to purchase staking assets.
+      </p>
 
       <style jsx>{`
         main {
@@ -63,6 +94,15 @@ export const Home: NextPage<HomeProps> = ({ data }) => {
           line-height: 1.5;
           font-size: 1.5rem;
           margin: 4px 0 20px;
+        }
+
+        .list {
+          margin: 12px 0 48px;
+        }
+
+        p {
+          margin: 4px 8px;
+          max-width: 700px;
         }
       `}</style>
     </main>
