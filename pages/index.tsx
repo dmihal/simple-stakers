@@ -118,7 +118,11 @@ export const Home: NextPage<HomeProps> = ({ data }) => {
 export const getStaticProps: GetStaticProps = async () => {
   const list = sdk.getCollection('eth-staking-pools')
   await list.fetchAdapters()
-  let data = await list.executeQueriesWithMetadata(['apy', 'underlyingAssetMarketRate'], { allowMissingQueries: true })
+  let data = await list.executeQueriesWithMetadata([
+    'apy',
+    'underlyingAssetMarketRate',
+    'totalStakedEth',
+  ], { allowMissingQueries: true })
   data = data.filter(val => val.results.apy)
 
   return { props: { data }, revalidate: 60 };
