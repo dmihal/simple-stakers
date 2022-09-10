@@ -36,16 +36,16 @@ const Row: React.FC<RowProps> = ({ protocol }) => {
       >
         <div className="name">{protocol.metadata.name}</div>
         <div className="amount">
-          {(protocol.results.issuanceRateCurrent * 100).toLocaleString('en-US', {
+          {((protocol.results.underlyingAssetMarketRate - 1) * 100).toLocaleString('en-US', {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2,
           })}%
         </div>
         <div className="amount">
-          {protocol.results.issuance7DayAvgUSD.toLocaleString('en-US', {
-            style: 'currency',
-            currency: 'USD',
-          })}
+          {(protocol.results.apy * 100).toLocaleString('en-US', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })}%
         </div>
         <div className="arrow">{open ? <ChevronUp /> : <ChevronDown />}</div>
       </div>

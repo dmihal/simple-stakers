@@ -6,27 +6,27 @@ interface ListProps {
 }
 
 enum SORT {
-  USD,
-  RATE,
+  APY,
+  DISCOUNT,
 }
 
-const sortByUSD = (a: any, b: any) => b.results.issuance7DayAvgUSD - a.results.issuance7DayAvgUSD
-const sortByRate = (a: any, b: any) => b.results.issuanceRateCurrent - a.results.issuanceRateCurrent
+const sortByAPY = (a: any, b: any) => b.results.apy - a.results.apy
+const sortByDiscount = (a: any, b: any) => a.results.underlyingAssetMarketRate - b.results.underlyingAssetMarketRate
 
 const List: React.FC<ListProps> = ({ data }) => {
-  const [sort, setSort] = useState<SORT>(SORT.USD);
+  const [sort, setSort] = useState<SORT>(SORT.APY);
 
-  const sortedData = data.sort(sort === SORT.USD ? sortByUSD : sortByRate);
+  const sortedData = data.sort(sort === SORT.APY ? sortByAPY : sortByDiscount);
 
   return (
     <div className="list">
       <div className="header">
         <div className="name">Name</div>
-        <div className="amount" onClick={() => setSort(SORT.RATE)}>
-          {sort === SORT.RATE && '▼'} Issuance Rate
+        <div className="amount" onClick={() => setSort(SORT.DISCOUNT)}>
+          {sort === SORT.DISCOUNT && '▼'} Market Discount
         </div>
-        <div className="amount" onClick={() => setSort(SORT.USD)}>
-          {sort === SORT.USD && '▼'} Daily issuance
+        <div className="amount" onClick={() => setSort(SORT.APY)}>
+          {sort === SORT.APY && '▼'} APY
         </div>
       </div>
 

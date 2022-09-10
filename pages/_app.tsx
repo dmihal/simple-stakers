@@ -19,7 +19,7 @@ const App: React.FC<AppProps> = ({ Component, pageProps }) => {
         />
       </Head>
 
-      <PlausibleProvider domain="moneyprinter.info">
+      <PlausibleProvider domain="simplestakers.info">
         <Header />
 
         <Component {...pageProps} />

@@ -3,6 +3,7 @@ import { NextPage, GetStaticProps } from 'next'
 import sdk from 'data/sdk'
 import List from 'components/List'
 import SocialTags from 'components/SocialTags'
+import { TAGLINE, TITLE } from '../constants'
 
 interface HomeProps {
   data: any[]
@@ -13,11 +14,9 @@ export const Home: NextPage<HomeProps> = ({ data }) => {
     <main>
       <SocialTags />
 
-      <h1 className="title">Money Printer</h1>
+      <h1 className="title">{TITLE}</h1>
 
-      <p className="description">
-        How much money are protocols paying to grow?
-      </p>
+      <p className="description">{TAGLINE}</p>
 
       <p>
         Like this site?{' '}
@@ -77,10 +76,10 @@ export const Home: NextPage<HomeProps> = ({ data }) => {
  * Visit https://cryptostats.community/discover/issuance to see the code for these adapters
  */
 export const getStaticProps: GetStaticProps = async () => {
-  const list = sdk.getCollection('issuance')
+  const list = sdk.getCollection('eth-staking-pools')
   await list.fetchAdapters()
-  let data = await list.executeQueriesWithMetadata(['issuance7DayAvgUSD', 'issuanceRateCurrent'])
-  data = data.filter(val => val.results.issuance7DayAvgUSD && val.results.issuanceRateCurrent)
+  let data = await list.executeQueriesWithMetadata(['apy', 'underlyingAssetMarketRate'], { allowMissingQueries: true })
+  data = data.filter(val => val.results.apy)
 
   return { props: { data }, revalidate: 60 };
 };
