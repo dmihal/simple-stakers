@@ -11,9 +11,21 @@ path.resolve(process.cwd(), 'fonts', 'fonts.conf');
 path.resolve(process.cwd(), 'fonts', 'SofiaProRegular.ttf');
 
 const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
-  const list = sdk.getList('issuance')
+  const list = sdk.getCollection('eth-staking-pools')
   await list.fetchAdapters()
-  const data = await list.executeQueriesWithMetadata(['issuance7DayAvgUSD'])
+  let data = await list.executeQueriesWithMetadata([
+    'apy',
+    'underlyingAssetMarketRate',
+    'totalStakedETH',
+  ], { allowMissingQueries: true })
+  data = data
+    .filter(val => val.results.apy)
+    .map(item => {
+      const daysUntilUnlock = 9 * 30
+      item.results.effectiveAPY = item.results.apy + ((1 - item.results.underlyingAssetMarketRate) / (daysUntilUnlock / 365))
+      return item
+    })
+    .sort((a: any, b: any) => b.results.effectiveAPY - a.results.effectiveAPY)
 
   const svg = ReactDOMServer.renderToString(
     React.createElement(SocialCard, { data, date: sdk.date.formatDate(new Date()) })
