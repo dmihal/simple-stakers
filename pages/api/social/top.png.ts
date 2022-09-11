@@ -28,7 +28,7 @@ const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
     .sort((a: any, b: any) => b.results.effectiveAPY - a.results.effectiveAPY)
 
   const svg = ReactDOMServer.renderToString(
-    React.createElement(SocialCard, { data, date: sdk.date.formatDate(new Date()) })
+    React.createElement(SocialCard, { data })
   );
 
   const buffer = Buffer.from(svg);

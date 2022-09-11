@@ -43,7 +43,7 @@ const Row: React.FC<RowProps> = ({ protocol, index }) => {
         </g>
 
         <text fontFamily={font} fontSize="16" fill="#091636" x="70" y="18">
-          {protocol.metadata.name.length > 20 ? protocol.metadata.name.substr(0, 20) + '...' : protocol.metadata.name}
+          {protocol.metadata.name.length > 15 ? protocol.metadata.name.substr(0, 15) + '...' : protocol.metadata.name}
         </text>
 
         <text y="18" x="380" fontFamily={font} fontSize="16" textAnchor="end" fill="#091636">
