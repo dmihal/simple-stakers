@@ -81,6 +81,7 @@ const Row = ({ protocol, daysUntilUnlock }: RowProps) => {
           text-decoration: none;
           align-items: center;
           height: 54px;
+          cursor: pointer;
         }
         .item:hover {
           background-color: #f5f5f5;
@@ -96,6 +97,9 @@ const Row = ({ protocol, daysUntilUnlock }: RowProps) => {
         .name {
           flex: 1;
           padding-left: 32px;
+          max-height: 100%;
+          text-overflow: ellipsis;
+          overflow: hidden;
         }
 
         .gray {
