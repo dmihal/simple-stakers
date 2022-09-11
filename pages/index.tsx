@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { NextPage, GetStaticProps } from 'next'
 import sdk from 'data/sdk'
 import List from 'components/List'
@@ -10,6 +10,8 @@ interface HomeProps {
 }
 
 export const Home: NextPage<HomeProps> = ({ data }) => {
+  const [months, setMonths] = useState(9)
+
   return (
     <main>
       <SocialTags />
@@ -35,7 +37,18 @@ export const Home: NextPage<HomeProps> = ({ data }) => {
       </div>
 
       <div className="list">
-        <List data={data} />
+        <List data={data} daysUntilUnlock={months * 30} />
+        <div className="month-bar">
+          Assuming staked ETH will unlock {}
+          <input
+            className="months"
+            type="number"
+            value={months}
+            onChange={e => setMonths(parseInt(e.target.value))}
+            min="0"
+          />
+          {} months from now.
+        </div>
       </div>
 
       <p>
@@ -100,9 +113,31 @@ export const Home: NextPage<HomeProps> = ({ data }) => {
           margin: 12px 0 48px;
         }
 
+        .month-bar {
+          background: #eee;
+          font-size: 14px;
+          text-align: right;
+          border: solid 1px #ccc;
+          padding: 4px;
+        }
+        .months {
+          background: #f7f7f7;
+          border: none;
+          width: 34px;
+        }
+
         p {
           margin: 4px 8px;
           max-width: 700px;
+        }
+
+        @media (max-width: 700px) {
+          .title {
+            font-size: 36px;
+          }
+          .description {
+            font-size: 18px;
+          }
         }
       `}</style>
     </main>
@@ -121,11 +156,11 @@ export const getStaticProps: GetStaticProps = async () => {
   let data = await list.executeQueriesWithMetadata([
     'apy',
     'underlyingAssetMarketRate',
-    'totalStakedEth',
+    'totalStakedETH',
   ], { allowMissingQueries: true })
   data = data.filter(val => val.results.apy)
 
-  return { props: { data }, revalidate: 60 };
+  return { props: { data }, revalidate: 60 * 60 };
 };
 
 export default Home;

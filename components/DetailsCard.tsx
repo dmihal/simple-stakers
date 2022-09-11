@@ -5,8 +5,8 @@ const DetailsCard: React.FC<{ protocol: any }> = ({ protocol }) => {
   return (
     <div className="details-card">
       <div className="metadata">
-        {protocol.result.totalStakedEth && (
-          <Attribute title="Total Staked">{protocol.result.totalStakedEth.toFixed(0)} ETH</Attribute>
+        {protocol.results.totalStakedETH && (
+          <Attribute title="Total Staked">{protocol.results.totalStakedETH.toFixed(0)} ETH</Attribute>
         )}
 
         <div className="spacer" />

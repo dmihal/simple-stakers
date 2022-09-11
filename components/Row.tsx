@@ -6,17 +6,26 @@ import DetailsCard from './DetailsCard';
 
 interface RowProps {
   protocol: any;
+  daysUntilUnlock: number
 }
 
 const toggle = (isOpen: boolean) => !isOpen;
 
 const cardHeight = 600;
 
-const Row: React.FC<RowProps> = ({ protocol }) => {
+const toDecimal = (num: number) => num.toLocaleString('en-US', {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+})
+
+const Row = ({ protocol, daysUntilUnlock }: RowProps) => {
   const plausible = usePlausible();
   const [open, setOpen] = useState(false);
 
   const isApp = protocol.metadata.category !== 'l1' && protocol.metadata.category !== 'l2';
+
+  const priceInETH = protocol.results.underlyingAssetMarketRate
+  const effectiveAPY = protocol.results.apy + ((1 - protocol.results.underlyingAssetMarketRate) / (daysUntilUnlock / 365));
 
   return (
     <Fragment>
@@ -36,16 +45,19 @@ const Row: React.FC<RowProps> = ({ protocol }) => {
       >
         <div className="name">{protocol.metadata.name}</div>
         <div className="amount">
-          {((protocol.results.underlyingAssetMarketRate - 1) * 100).toLocaleString('en-US', {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-          })}%
+          {toDecimal(priceInETH)} Ξ {}
+          <span className="gray">
+            (
+            {protocol.results.underlyingAssetMarketRate > 1 && '+'}
+            {toDecimal((protocol.results.underlyingAssetMarketRate - 1) * 100)}
+            %)
+          </span>
+        </div>
+        <div className="apy">
+          {toDecimal(protocol.results.apy * 100)}%
         </div>
         <div className="amount">
-          {(protocol.results.apy * 100).toLocaleString('en-US', {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-          })}%
+          {toDecimal(effectiveAPY * 100)}%
         </div>
         <div className="arrow">{open ? <ChevronUp /> : <ChevronDown />}</div>
       </div>
@@ -86,12 +98,21 @@ const Row: React.FC<RowProps> = ({ protocol }) => {
           padding-left: 32px;
         }
 
+        .gray {
+          color: #555555;
+        }
+
         .amount {
           padding-left: 32px;
         }
 
         .amount {
-          min-width: 200px;
+          min-width: 180px;
+          text-align: right;
+          font-family: 'Noto Sans TC', sans-serif;
+        }
+        .apy {
+          min-width: 100px;
           text-align: right;
           font-family: 'Noto Sans TC', sans-serif;
         }
@@ -139,7 +160,7 @@ const Row: React.FC<RowProps> = ({ protocol }) => {
         }
 
         @media (max-width: 700px) {
-          .amount {
+          .amount, .apy {
             font-size: 14px;
             min-width: 110px;
             padding-left: 8px;
@@ -162,7 +183,7 @@ const Row: React.FC<RowProps> = ({ protocol }) => {
           .item {
             background-position: 8px 19px;
           }
-          .amount {
+          .amount, .apy {
             min-width: 80px;
             padding-left: 20px;
           }

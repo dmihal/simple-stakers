@@ -3,35 +3,56 @@ import Row from './Row';
 
 interface ListProps {
   data: any[]
+  daysUntilUnlock: number
 }
 
 enum SORT {
   APY,
   DISCOUNT,
+  EFFECTIVE_APY,
 }
 
 const sortByAPY = (a: any, b: any) => b.results.apy - a.results.apy
 const sortByDiscount = (a: any, b: any) => a.results.underlyingAssetMarketRate - b.results.underlyingAssetMarketRate
+const sortByEffectiveAPY = (daysUntilUnlock: number) => (a: any, b: any) => {
+  const apyA = a.results.apy + ((1 - a.results.underlyingAssetMarketRate) / (daysUntilUnlock / 365))
+  const apyB = b.results.apy + ((1 - b.results.underlyingAssetMarketRate) / (daysUntilUnlock / 365))
+  return apyB - apyA
+}
 
-const List: React.FC<ListProps> = ({ data }) => {
-  const [sort, setSort] = useState<SORT>(SORT.APY);
+const List = ({ data, daysUntilUnlock }: ListProps) => {
+  const [sort, setSort] = useState<SORT>(SORT.EFFECTIVE_APY);
 
-  const sortedData = data.sort(sort === SORT.APY ? sortByAPY : sortByDiscount);
+  let sortedData = data
+  switch (sort) {
+    case SORT.APY:
+      sortedData = data.sort(sortByAPY)
+      break
+    case SORT.DISCOUNT:
+      sortedData = data.sort(sortByDiscount)
+      break
+    case SORT.EFFECTIVE_APY:
+      sortedData = data.sort(sortByEffectiveAPY(daysUntilUnlock))
+      break
+  }
 
   return (
     <div className="list">
       <div className="header">
         <div className="name">Name</div>
         <div className="amount" onClick={() => setSort(SORT.DISCOUNT)}>
-          {sort === SORT.DISCOUNT && '▼'} Market Discount
+          {sort === SORT.DISCOUNT && '▼'} Market Price
         </div>
-        <div className="amount" onClick={() => setSort(SORT.APY)}>
+        <div className="apy" onClick={() => setSort(SORT.APY)}>
           {sort === SORT.APY && '▼'} APY
+        </div>
+        <div className="amount" onClick={() => setSort(SORT.EFFECTIVE_APY)}>
+          {sort === SORT.EFFECTIVE_APY && '▼'} Effective APY
         </div>
       </div>
 
       {sortedData.map((protocol: any) => (
-        <Row protocol={protocol} key={protocol.id} />
+        <Row protocol={protocol} key={protocol.id} daysUntilUnlock={daysUntilUnlock} />
       ))}
 
       <style jsx>{`
@@ -39,7 +60,6 @@ const List: React.FC<ListProps> = ({ data }) => {
           border: solid 1px lightGray;
           border-radius: 0px;
           overflow: hidden;
-          margin: 4px;
           max-width: 700px;
           width: 100%;
         }
@@ -51,11 +71,6 @@ const List: React.FC<ListProps> = ({ data }) => {
           background: #eee;
           font-weight: 500;
           padding-left: 10px;
-        }
-
-        .header .amount:hover {
-          cursor: pointer;
-          background: #eee;
         }
 
         .item {
@@ -82,9 +97,15 @@ const List: React.FC<ListProps> = ({ data }) => {
           flex: 1;
         }
 
-        .amount {
-          min-width: 200px;
+        .amount, .apy {
+          cursor: pointer;
           text-align: right;
+        }
+        .amount {
+          min-width: 180px;
+        }
+        .apy {
+          min-width: 100px;
         }
 
         @media (max-width: 700px) {
