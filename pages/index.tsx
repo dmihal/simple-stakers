@@ -160,7 +160,7 @@ export const getStaticProps: GetStaticProps = async () => {
   ], { allowMissingQueries: true })
   data = data.filter(val => val.results.apy)
 
-  return { props: { data }, revalidate: 60 * 60 };
+  return { props: { data }, revalidate: 5 * 60 };
 };
 
 export default Home;
