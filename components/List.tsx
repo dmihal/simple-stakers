@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
+import { usePopper } from 'react-popper';
 import Row from './Row';
 
 interface ListProps {
@@ -22,6 +23,22 @@ const sortByEffectiveAPY = (daysUntilUnlock: number) => (a: any, b: any) => {
 
 const List = ({ data, daysUntilUnlock }: ListProps) => {
   const [sort, setSort] = useState<SORT>(SORT.EFFECTIVE_APY);
+
+  const [showTooltip, setShowTooltip] = useState(false);
+  const target = useRef(null);
+  const tooltipEl = useRef(null);
+  const { styles, attributes } = usePopper(target.current, tooltipEl.current, {
+    placement: 'bottom-start',
+    modifiers: [
+      {
+        name: 'offset',
+        options: {
+          offset: [-130, 6],
+        },
+      },
+    ],
+  });
+
 
   let sortedData = data
   switch (sort) {
@@ -48,6 +65,24 @@ const List = ({ data, daysUntilUnlock }: ListProps) => {
         </div>
         <div className="amount" onClick={() => setSort(SORT.EFFECTIVE_APY)}>
           {sort === SORT.EFFECTIVE_APY && '▼'} Effective APY
+          <div
+            className="tooltip-target"
+            ref={target}
+            onMouseOver={() => setShowTooltip(true)}
+            onMouseOut={() => setShowTooltip(false)}
+          >
+            ?
+          </div>
+          <div
+            className="tooltipText"
+            ref={tooltipEl}
+            style={{ ...styles.popper, display: showTooltip ? 'block' : 'none' }}
+            {...attributes.popper}
+          >
+            Annualized return assuming (a) the staking derivative token is purchased
+            today at market prices, (b) the derivative is redeemed for ETH on the date
+            of staking unlocks and (c) the ETH staking rate remains constant.
+          </div>
         </div>
       </div>
 
@@ -108,10 +143,41 @@ const List = ({ data, daysUntilUnlock }: ListProps) => {
           min-width: 100px;
         }
 
+        .tooltip-target {
+          display: inline-block;
+          background: #999999;
+          color: #eeeeee;
+          height: 16px;
+          width: 16px;
+          border-radius: 100px;
+          text-align: center;
+          margin-left: 4px;
+          font-size: 11px;
+        }
+
+        .tooltipText {
+          width: 150px;
+          background-color: black;
+          color: #fff;
+          text-align: left;
+          padding: 5px 4px;
+          border-radius: 6px;
+          white-space: normal;
+          font-size: 11px;
+
+          z-index: 1;
+        }
+
+        .tooltip-target:hover .tooltipText {
+          visibility: visible;
+        }
+        .amount:last-child {
+          padding-right: 8px !important;
+        }
+
         @media (max-width: 700px) {
           .header {
             padding-left: 28px;
-            padding-right: 30px;
           }
           .header > div {
             font-size: 14px;
@@ -119,7 +185,7 @@ const List = ({ data, daysUntilUnlock }: ListProps) => {
 
           .amount {
             font-size: 16px;
-            min-width: 110px;
+            min-width: 130px;
           }
           .name {
             font-size: 14px;
@@ -137,6 +203,13 @@ const List = ({ data, daysUntilUnlock }: ListProps) => {
           .item > div,
           .header > div {
             padding: 8px 2px;
+          }
+          .tooltip-target {
+            margin-left: 2px;
+            font-size: 9px;
+            vertical-align: middle;
+            height: 14px;
+            width: 14px;
           }
         }
 

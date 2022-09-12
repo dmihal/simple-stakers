@@ -174,6 +174,9 @@ const Row = ({ protocol, daysUntilUnlock }: RowProps) => {
             padding-left: 30px;
             background-position: 6px center;
           }
+          .name {
+            padding-left: 2px;
+          }
 
           .arrow {
             padding: 0 2px;
