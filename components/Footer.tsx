@@ -35,6 +35,7 @@ const Footer: React.FC = () => {
       <style jsx>{`
         footer {
           text-align: center;
+          padding-top: 2rem;
         }
       `}</style>
     </footer>
