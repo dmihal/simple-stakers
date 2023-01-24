@@ -156,6 +156,8 @@ export const getStaticProps: GetStaticProps = async () => {
   let data = await list.executeQueriesWithMetadata([
     'apy',
     'underlyingAssetMarketRate',
+    'underlyingExchangeRate',
+    'marketPrice',
     'totalStakedETH',
   ], { allowMissingQueries: true })
   data = data.filter(val => val.results.apy)

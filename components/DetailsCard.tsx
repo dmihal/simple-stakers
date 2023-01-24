@@ -7,6 +7,26 @@ const DetailsCard: React.FC<{ protocol: any }> = ({ protocol }) => {
   return (
     <div className="details-card">
       <div className="metadata">
+        <div className="row">
+          {protocol.results.underlyingExchangeRate && (
+            <Attribute
+              title="Redemption Rate"
+              tooltip="The redemption rate represents the amount of ETH backing a staking derivative. This value is included in the calculation of the asset's market rate."
+            >
+              1 {protocol.metadata.tokenSymbol} = {protocol.results.underlyingExchangeRate.toFixed(4)} ETH
+            </Attribute>
+          )}
+
+          {protocol.results.marketPrice && (
+            <Attribute
+              title="Market Price"
+              tooltip="The market price is the ETH-denominated price of the staking derivative token on exchanges. This value is included in the calculation of the asset's market rate."
+            >
+              1 {protocol.metadata.tokenSymbol} = {protocol.results.marketPrice.toFixed(4)} ETH
+            </Attribute>
+          )}
+        </div>
+
         {protocol.results.totalStakedETH && (
           <Attribute title="Total Staked">{protocol.results.totalStakedETH.toFixed(0)} ETH</Attribute>
         )}
